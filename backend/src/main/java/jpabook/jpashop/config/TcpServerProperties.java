@@ -8,10 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "passbook.pawnshop.tcp-server")
 public class TcpServerProperties {
 
-//    @Value("${.port}")
     private int port;
 
-//    @Value("${.auto-start}")
     private boolean autoStart;
 
     public int getPort() {
