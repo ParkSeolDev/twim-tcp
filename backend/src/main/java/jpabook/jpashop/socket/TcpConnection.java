@@ -1,8 +1,6 @@
 package jpabook.jpashop.socket;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -14,6 +12,8 @@ public class TcpConnection implements Connection {
     private OutputStream outputStream;
     private Socket socket;
     private List<Listener> listeners = new ArrayList<>();
+    private BufferedReader br;
+    private PrintWriter pw;
 
     public TcpConnection(Socket socket) {
         this.socket = socket;
@@ -32,14 +32,18 @@ public class TcpConnection implements Connection {
 
     @Override
     public void send(Object objectToSend) {
-        if (objectToSend instanceof byte[]) {
-            byte[] data = (byte[]) objectToSend;
-            try {
-                outputStream.write(data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (objectToSend instanceof byte[]) {
+//            byte[] data = (byte[]) objectToSend;
+//            try {
+//                outputStream.write(data);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        br = new BufferedReader(new InputStreamReader(inputStream));
+        pw = new PrintWriter(outputStream);
+        pw.println(objectToSend);
+        pw.flush();
     }
 
     @Override

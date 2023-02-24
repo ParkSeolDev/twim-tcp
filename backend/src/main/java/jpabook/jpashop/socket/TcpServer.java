@@ -1,7 +1,11 @@
 package jpabook.jpashop.socket;
 
+import jpabook.jpashop.api.service.ItemService;
+import jpabook.jpashop.db.entity.item.Item;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,10 +23,13 @@ public class TcpServer implements Server, Connection.Listener {
     private List<Connection> connections = new ArrayList<>();
     private List<Connection.Listener> listeners = new ArrayList<>();
 
+    @Autowired
+    private ItemService itemService;
+
     public void setPort(Integer port) {
         try {
             if (port == null) {
-                logger.info("Property tcp.server.port not found. Use default port 1234");
+                logger.info("Property tcp.server.port not found. Use default port 9999");
                 port = 9999;
             }
             serverSocket = new ServerSocket(port);
@@ -49,8 +56,14 @@ public class TcpServer implements Server, Connection.Listener {
                         tcpConnection.start();
                         tcpConnection.addListener(this);
                         connected(tcpConnection);
+                        while (true){
+                            Thread.sleep(1000);
+                            List<Item> items = itemService.findItems();
+                            tcpConnection.send(items);
+                            System.out.println("보내는중");
+                        }
                     }
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }

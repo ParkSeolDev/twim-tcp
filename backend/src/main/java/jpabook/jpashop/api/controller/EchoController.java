@@ -1,8 +1,11 @@
 package jpabook.jpashop.api.controller;
+import com.google.gson.Gson;
 import jpabook.jpashop.api.service.ItemService;
 import jpabook.jpashop.db.entity.item.Item;
 import jpabook.jpashop.socket.Connection;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,6 +46,7 @@ public class EchoController {
      }
 
      public void sendData(Connection connection){
+
          List<Item> items = itemService.findItems();
          connection.send(items);
      }
@@ -50,6 +54,7 @@ public class EchoController {
     public void connect(Connection connection) {
         System.out.println("New connection " + connection.getAddress().getCanonicalHostName());
         sendData(connection);
+
     }
 
     public void disconnect(Connection connection) {
